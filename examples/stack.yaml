@@ -1,0 +1,9 @@
+name: k3s-demo
+template: ../
+# template: https://
+kind: Stack
+variables:
+  region: eu-central-1
+  name: arti-web-static-page
+  organization: Cluster.dev
+

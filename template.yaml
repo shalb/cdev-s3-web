@@ -1,0 +1,51 @@
+_p: &provider_aws
+- aws:
+    region: {{ .variables.region }}
+
+name: s3-static-web
+kind: StackTemplate
+units:
+  - 
+    name: s3-web
+    type: tfmodule
+    source: "terraform-aws-modules/s3-bucket/aws"
+    providers: *provider_aws
+    inputs:
+      bucket: {{ .variables.name }}
+      force_destroy: true
+      acl: "public-read"
+      website:
+        index_document: "index.html"
+        error_document: "index.html"
+      attach_policy: true
+      policy: |
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "PublicReadGetObject",
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": "s3:GetObject",
+                    "Resource": "arn:aws:s3:::{{ .variables.name }}/*"
+                }
+            ]
+        }
+  -
+    name: upload-web
+    type: shell
+    depends_on: this.s3-web
+    apply:
+      commands:
+        - aws s3 cp ./index.html s3://{{ .variables.name }}/index.html
+    create_files:
+    - file: ./index.html
+      content: |
+        <h1> Hello from {{ .variables.organization }} </h1>
+        This page was created automatically by cdev tool.
+  - 
+    name: outputs
+    type: printer
+    outputs:
+      bucket_name: "Endpoint: {{ remoteState "this.s3-web.s3_bucket_website_endpoint" }}"
+      name: {{ .variables.name }}

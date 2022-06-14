@@ -4,6 +4,6 @@ template: ../
 kind: Stack
 variables:
   region: eu-central-1
-  name: arti-web-static-page
+  name: web-static-page
   organization: Cluster.dev
 

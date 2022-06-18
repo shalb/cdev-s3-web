@@ -1,14 +1,15 @@
 name: s3-web-page
-template: ../
-# template: https://
+# template: ../
+template: https://github.com/shalb/cdev-s3-web?ref=healthcheck
 kind: Stack
 variables:
   region: eu-central-1
-  name: arti-web-static-page
+  name: arti-web-page
   organization: Shalb
 ---
 name: health-check
-template: ../health-check/
+template: https://github.com/shalb/cdev-s3-web//health-check?ref=healthcheck
+#template: ../health-check/
 kind: Stack
 variables:
   url: {{ output "s3-web-page.outputs.url" }}

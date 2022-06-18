@@ -1,9 +1,17 @@
-name: k3s-demo
+name: s3-web-page
 template: ../
 # template: https://
 kind: Stack
 variables:
   region: eu-central-1
   name: arti-web-static-page
-  organization: Cluster.dev
+  organization: Shalb
+---
+name: health-check
+template: ../health-check/
+kind: Stack
+variables:
+  url: {{ output "s3-web-page.outputs.url" }}
+
+
 

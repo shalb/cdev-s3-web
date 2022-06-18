@@ -1,7 +1,3 @@
-_p: &provider_aws
-- aws:
-    region: {{ .variables.region }}
-
 name: s3-static-web
 kind: StackTemplate
 units:
@@ -9,7 +5,9 @@ units:
     name: s3-web
     type: tfmodule
     source: "terraform-aws-modules/s3-bucket/aws"
-    providers: *provider_aws
+    providers:
+    - aws:
+        region: {{ .variables.region }}
     inputs:
       bucket: {{ .variables.name }}
       force_destroy: true
@@ -31,7 +29,7 @@ units:
                 }
             ]
         }
-  -
+  - 
     name: upload-web
     type: shell
     depends_on: this.s3-web
@@ -46,6 +44,8 @@ units:
   - 
     name: outputs
     type: printer
+    depends_on: this.upload-web
     outputs:
-      bucket_name: "Endpoint: {{ remoteState "this.s3-web.s3_bucket_website_endpoint" }}"
+      url: "{{ remoteState "this.s3-web.s3_bucket_website_endpoint" }}"
       name: {{ .variables.name }}
+

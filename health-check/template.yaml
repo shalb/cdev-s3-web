@@ -1,0 +1,20 @@
+name: check-url
+kind: StackTemplate
+units:
+  - 
+    name: curl-check
+    type: shell
+    apply:
+      commands:
+        - RES="$(curl {{ .variables.url }}/index.html)"
+        - echo result=${RES}
+    outputs:
+      type: separator
+      separator: "="
+
+  - 
+    name: outputs
+    type: printer
+    outputs:
+      name: {{ output "this.curl-check.result" }}
+
